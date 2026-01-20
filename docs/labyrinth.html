@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Das Labyrinth Visual</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #2a1b3d, #0b0d16 55%, #06060a 100%);
+      color: #f6f0ff;
+    }
+    header {
+      padding: 32px 40px 12px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .subtitle {
+      opacity: 0.75;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) 320px;
+      gap: 24px;
+      padding: 12px 40px 40px;
+    }
+    .panel {
+      background: rgba(10, 12, 24, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+    svg {
+      width: 100%;
+      height: 520px;
+    }
+    .edge {
+      stroke: rgba(160, 120, 255, 0.35);
+      stroke-width: 3;
+      filter: drop-shadow(0 0 6px rgba(120, 80, 255, 0.4));
+    }
+    .node circle {
+      fill: rgba(255, 255, 255, 0.08);
+      stroke: rgba(255, 255, 255, 0.3);
+      stroke-width: 2;
+      filter: drop-shadow(0 0 12px rgba(120, 80, 255, 0.55));
+    }
+    .node text {
+      font-size: 12px;
+      text-anchor: middle;
+      fill: #f9f1ff;
+      pointer-events: none;
+    }
+    .node.giratina-raum circle {
+      fill: rgba(255, 120, 120, 0.25);
+      stroke: rgba(255, 120, 120, 0.9);
+      filter: drop-shadow(0 0 16px rgba(255, 120, 120, 0.8));
+    }
+    .node.säulenraum circle {
+      fill: rgba(90, 180, 255, 0.25);
+      stroke: rgba(120, 220, 255, 0.9);
+    }
+    .legend {
+      display: grid;
+      gap: 12px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+    }
+    .legend-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(120, 80, 255, 0.8);
+    }
+    .legend-labyrinth {
+      background: rgba(255, 255, 255, 0.25);
+    }
+    .legend-pillar {
+      background: rgba(120, 220, 255, 0.9);
+    }
+    .legend-boss {
+      background: rgba(255, 120, 120, 0.9);
+    }
+    ol {
+      margin: 12px 0 0;
+      padding-left: 20px;
+      max-height: 420px;
+      overflow: auto;
+    }
+    li {
+      margin-bottom: 8px;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Das Labyrinth</h1>
+    <div class="subtitle">Pokémon Diamant/Perl/Platin — Visualisierung für eine Spielsitzung</div>
+  </header>
+  <section class="layout">
+    <div class="panel">
+      <svg viewBox="0 0 700 700" aria-label="Labyrinth-Visualisierung">
+        <line class="edge" x1="376.8" y1="404.0" x2="384.8" y2="446.4" /><line class="edge" x1="384.8" y1="446.4" x2="290.0" y2="433.3" /><line class="edge" x1="290.0" y1="433.3" x2="231.8" y2="368.5" /><line class="edge" x1="231.8" y1="368.5" x2="234.2" y2="316.0" /><line class="edge" x1="234.2" y1="316.0" x2="291.5" y2="236.5" /><line class="edge" x1="291.5" y1="236.5" x2="372.5" y2="170.2" /><line class="edge" x1="372.5" y1="170.2" x2="479.6" y2="256.0" /><line class="edge" x1="479.6" y1="256.0" x2="550.2" y2="347.3" /><line class="edge" x1="550.2" y1="347.3" x2="519.3" y2="491.1" /><line class="edge" x1="519.3" y1="491.1" x2="384.2" y2="588.1" /><line class="edge" x1="384.2" y1="588.1" x2="215.8" y2="576.3" /><line class="edge" x1="215.8" y1="576.3" x2="78.8" y2="446.3" /><line class="edge" x1="78.8" y1="446.3" x2="60.0" y2="252.7" /><line class="edge" x1="60.0" y1="252.7" x2="224.9" y2="60.0" /><line class="edge" x1="224.9" y1="60.0" x2="409.9" y2="60.0" /><line class="edge" x1="409.9" y1="60.0" x2="623.0" y2="150.8" /><line class="edge" x1="623.0" y1="150.8" x2="640.0" y2="370.0" /><line class="edge" x1="640.0" y1="370.0" x2="640.0" y2="619.5" /><line class="edge" x1="640.0" y1="619.5" x2="424.2" y2="640.0" />
+        <g class="node eingang"><circle cx="376.8" cy="404.0" r="18" /><text x="376.8" y="409.0">01</text></g><g class="node labyrinthraum"><circle cx="384.8" cy="446.4" r="18" /><text x="384.8" y="451.4">02</text></g><g class="node labyrinthraum"><circle cx="290.0" cy="433.3" r="18" /><text x="290.0" y="438.3">03</text></g><g class="node säulenraum"><circle cx="231.8" cy="368.5" r="18" /><text x="231.8" y="373.5">04</text></g><g class="node labyrinthraum"><circle cx="234.2" cy="316.0" r="18" /><text x="234.2" y="321.0">05</text></g><g class="node säulenraum"><circle cx="291.5" cy="236.5" r="18" /><text x="291.5" y="241.5">06</text></g><g class="node labyrinthraum"><circle cx="372.5" cy="170.2" r="18" /><text x="372.5" y="175.2">07</text></g><g class="node labyrinthraum"><circle cx="479.6" cy="256.0" r="18" /><text x="479.6" y="261.0">08</text></g><g class="node labyrinthraum"><circle cx="550.2" cy="347.3" r="18" /><text x="550.2" y="352.3">09</text></g><g class="node labyrinthraum"><circle cx="519.3" cy="491.1" r="18" /><text x="519.3" y="496.1">10</text></g><g class="node labyrinthraum"><circle cx="384.2" cy="588.1" r="18" /><text x="384.2" y="593.1">11</text></g><g class="node labyrinthraum"><circle cx="215.8" cy="576.3" r="18" /><text x="215.8" y="581.3">12</text></g><g class="node labyrinthraum"><circle cx="78.8" cy="446.3" r="18" /><text x="78.8" y="451.3">13</text></g><g class="node labyrinthraum"><circle cx="60.0" cy="252.7" r="18" /><text x="60.0" y="257.7">14</text></g><g class="node labyrinthraum"><circle cx="224.9" cy="60.0" r="18" /><text x="224.9" y="65.0">15</text></g><g class="node labyrinthraum"><circle cx="409.9" cy="60.0" r="18" /><text x="409.9" y="65.0">16</text></g><g class="node labyrinthraum"><circle cx="623.0" cy="150.8" r="18" /><text x="623.0" y="155.8">17</text></g><g class="node labyrinthraum"><circle cx="640.0" cy="370.0" r="18" /><text x="640.0" y="375.0">18</text></g><g class="node säulenraum"><circle cx="640.0" cy="619.5" r="18" /><text x="640.0" y="624.5">19</text></g><g class="node giratina-raum"><circle cx="424.2" cy="640.0" r="18" /><text x="424.2" y="645.0">20</text></g>
+      </svg>
+    </div>
+    <aside class="panel">
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch legend-labyrinth"></span> Labyrinthraum</div>
+        <div class="legend-item"><span class="legend-swatch legend-pillar"></span> Säulenraum</div>
+        <div class="legend-item"><span class="legend-swatch legend-boss"></span> Giratina-Raum</div>
+      </div>
+      <h2>Abfolge</h2>
+      <ol><li><strong>01 Eingang</strong> — ...Nach drei Säulen... zum schlafenden... ...30 nicht überschreiten...</li>
+<li><strong>02 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>03 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>04 Säulenraum</strong> — Säule 1 — Räume gesehen: 4. Pokémon werden um 10 Level stärker.</li>
+<li><strong>05 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>06 Säulenraum</strong> — Säule 2 — Räume gesehen: 6. Pokémon werden um 10 Level stärker.</li>
+<li><strong>07 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>08 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>09 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>10 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>11 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>12 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>13 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>14 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>15 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>16 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>17 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>18 Labyrinthraum</strong> — Ein weiterer verwirrender Gang.</li>
+<li><strong>19 Säulenraum</strong> — Säule 3 — Räume gesehen: 19. Pokémon werden um 10 Level stärker.</li>
+<li><strong>20 Giratina-Raum</strong> — Dies ist...Wo Leben funkelt...Wo Leben schwindet...Ein Ort, an dem sich zwei Welten überlappen...</li></ol>
+    </aside>
+  </section>
+</body>
+</html>
