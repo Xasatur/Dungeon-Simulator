@@ -1,0 +1,20 @@
+{
+  "name": "Das Labyrinth",
+  "game": "Pokémon Diamant/Perl/Platin",
+  "rules": {
+    "max_rooms": 30,
+    "pillars": 3,
+    "pillar_level_increase": 10,
+    "reset_on_overflow": true
+  },
+  "rooms": {
+    "entrance": "Eingang",
+    "labyrinth": "Labyrinthraum",
+    "pillar": "Säulenraum",
+    "boss": "Giratina-Raum"
+  },
+  "inscriptions": {
+    "entrance": "...Nach drei Säulen... zum schlafenden... ...30 nicht überschreiten...",
+    "boss": "Dies ist...Wo Leben funkelt...Wo Leben schwindet...Ein Ort, an dem sich zwei Welten überlappen..."
+  }
+}
