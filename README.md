@@ -20,6 +20,16 @@ These rules are stored in `data/dungeon.json` so you can tweak them easily.
 python src/simulator.py --seed 42
 ```
 
+### HTML visualization
+
+Generate a standalone HTML visualization (suitable for opening in a browser during your session):
+
+```bash
+python src/simulator.py --seed 42 --html-output docs/labyrinth.html
+```
+
+Open `docs/labyrinth.html` in your browser to view the glowing dungeon path.
+
 Sample output:
 
 ```

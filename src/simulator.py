@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import random
 from dataclasses import dataclass
 from pathlib import Path
@@ -42,6 +43,15 @@ class Step:
     index: int
     room_type: str
     details: str
+
+
+@dataclass(frozen=True)
+class VisualNode:
+    index: int
+    room_type: str
+    label: str
+    x: float
+    y: float
 
 
 def load_config(path: Path) -> DungeonConfig:
@@ -126,6 +136,187 @@ def format_steps(steps: Iterable[Step]) -> str:
     return "\n".join(lines)
 
 
+def build_visual_nodes(steps: list[Step]) -> list[VisualNode]:
+    nodes: list[VisualNode] = []
+    angle = 0.0
+    radius = 40.0
+    for step in steps:
+        angle += 0.7
+        radius += 18
+        jitter = random.Random(step.index)
+        x = 350 + radius * math.cos(angle) + jitter.uniform(-24, 24)
+        y = 350 + radius * math.sin(angle) + jitter.uniform(-24, 24)
+        x = max(60, min(640, x))
+        y = max(60, min(640, y))
+        nodes.append(
+            VisualNode(
+                index=step.index,
+                room_type=step.room_type,
+                label=f"{step.index:02d}",
+                x=x,
+                y=y,
+            )
+        )
+    return nodes
+
+
+def render_html(config: DungeonConfig, steps: list[Step]) -> str:
+    nodes = build_visual_nodes(steps)
+    lines = []
+    for idx in range(1, len(nodes)):
+        prev = nodes[idx - 1]
+        curr = nodes[idx]
+        lines.append(
+            f'<line class="edge" x1="{prev.x:.1f}" y1="{prev.y:.1f}" '
+            f'x2="{curr.x:.1f}" y2="{curr.y:.1f}" />'
+        )
+    circles = []
+    for node, step in zip(nodes, steps, strict=True):
+        room_class = step.room_type.lower().replace(" ", "-")
+        circles.append(
+            f'<g class="node {room_class}">'
+            f'<circle cx="{node.x:.1f}" cy="{node.y:.1f}" r="18" />'
+            f'<text x="{node.x:.1f}" y="{node.y + 5:.1f}">{node.label}</text>'
+            f'</g>'
+        )
+    steps_text = "\n".join(
+        f"<li><strong>{step.index:02d} {step.room_type}</strong> — {step.details}</li>" for step in steps
+    )
+    return f"""<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{config.name} Visual</title>
+  <style>
+    :root {{
+      color-scheme: dark;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }}
+    body {{
+      margin: 0;
+      background: radial-gradient(circle at top, #2a1b3d, #0b0d16 55%, #06060a 100%);
+      color: #f6f0ff;
+    }}
+    header {{
+      padding: 32px 40px 12px;
+    }}
+    h1 {{
+      margin: 0 0 8px;
+      font-size: 2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }}
+    .subtitle {{
+      opacity: 0.75;
+    }}
+    .layout {{
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) 320px;
+      gap: 24px;
+      padding: 12px 40px 40px;
+    }}
+    .panel {{
+      background: rgba(10, 12, 24, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }}
+    svg {{
+      width: 100%;
+      height: 520px;
+    }}
+    .edge {{
+      stroke: rgba(160, 120, 255, 0.35);
+      stroke-width: 3;
+      filter: drop-shadow(0 0 6px rgba(120, 80, 255, 0.4));
+    }}
+    .node circle {{
+      fill: rgba(255, 255, 255, 0.08);
+      stroke: rgba(255, 255, 255, 0.3);
+      stroke-width: 2;
+      filter: drop-shadow(0 0 12px rgba(120, 80, 255, 0.55));
+    }}
+    .node text {{
+      font-size: 12px;
+      text-anchor: middle;
+      fill: #f9f1ff;
+      pointer-events: none;
+    }}
+    .node.giratina-raum circle {{
+      fill: rgba(255, 120, 120, 0.25);
+      stroke: rgba(255, 120, 120, 0.9);
+      filter: drop-shadow(0 0 16px rgba(255, 120, 120, 0.8));
+    }}
+    .node.säulenraum circle {{
+      fill: rgba(90, 180, 255, 0.25);
+      stroke: rgba(120, 220, 255, 0.9);
+    }}
+    .legend {{
+      display: grid;
+      gap: 12px;
+    }}
+    .legend-item {{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+    }}
+    .legend-swatch {{
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(120, 80, 255, 0.8);
+    }}
+    .legend-labyrinth {{
+      background: rgba(255, 255, 255, 0.25);
+    }}
+    .legend-pillar {{
+      background: rgba(120, 220, 255, 0.9);
+    }}
+    .legend-boss {{
+      background: rgba(255, 120, 120, 0.9);
+    }}
+    ol {{
+      margin: 12px 0 0;
+      padding-left: 20px;
+      max-height: 420px;
+      overflow: auto;
+    }}
+    li {{
+      margin-bottom: 8px;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{config.name}</h1>
+    <div class="subtitle">{config.game} — Visualisierung für eine Spielsitzung</div>
+  </header>
+  <section class="layout">
+    <div class="panel">
+      <svg viewBox="0 0 700 700" aria-label="Labyrinth-Visualisierung">
+        {"".join(lines)}
+        {"".join(circles)}
+      </svg>
+    </div>
+    <aside class="panel">
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch legend-labyrinth"></span> Labyrinthraum</div>
+        <div class="legend-item"><span class="legend-swatch legend-pillar"></span> Säulenraum</div>
+        <div class="legend-item"><span class="legend-swatch legend-boss"></span> Giratina-Raum</div>
+      </div>
+      <h2>Abfolge</h2>
+      <ol>{steps_text}</ol>
+    </aside>
+  </section>
+</body>
+</html>"""
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Simulate Das Labyrinth dungeon traversal.")
     parser.add_argument(
@@ -135,6 +326,12 @@ def main() -> None:
         help="Path to dungeon configuration JSON.",
     )
     parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility.")
+    parser.add_argument(
+        "--html-output",
+        type=Path,
+        default=None,
+        help="Optional path to write an HTML visualization.",
+    )
     args = parser.parse_args()
 
     config = load_config(args.data)
@@ -142,6 +339,10 @@ def main() -> None:
     steps = list(simulate_run(config, rng))
     print(f"Dungeon: {config.name} ({config.game})")
     print(format_steps(steps))
+    if args.html_output:
+        html = render_html(config, steps)
+        args.html_output.write_text(html, encoding="utf-8")
+        print(f"HTML visualization written to {args.html_output}")
 
 
 if __name__ == "__main__":
