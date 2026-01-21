@@ -1,6 +1,6 @@
 # Dungeon Simulator – Das Labyrinth
 
-This repo contains a lightweight prototype for simulating **Das Labyrinth** from Pokémon Diamant/Perl/Platin so it can be used as a visual aid during tabletop sessions.
+This repo contains a lightweight prototype for simulating **Das Labyrinth** from Pokémon Diamant/Perl/Platin so it can be used as a visual aid during tabletop sessions. It now ships with a Streamlit mini-game where you control an NPC through the maze.
 
 ## What the simulator models
 
@@ -14,7 +14,7 @@ The rules are encoded from the dungeon description:
 
 These rules are stored in `data/dungeon.json` so you can tweak them easily.
 
-## Quick start
+## Quick start (CLI)
 
 ```bash
 python src/simulator.py --seed 42
@@ -36,7 +36,20 @@ Dungeon: Das Labyrinth (Pokémon Diamant/Perl/Platin)
 10. Giratina-Raum: Dies ist...Wo Leben funkelt...Wo Leben schwindet...Ein Ort, an dem sich zwei Welten überlappen...
 ```
 
-## Next steps to turn this into a game-session visual
+## Quick start (Streamlit game)
+
+```bash
+streamlit run src/app.py
+```
+
+### Game rules
+
+- Start at the entrance and explore a 6×5 dungeon grid.
+- **Find all 3 pillars within 30 rooms** to win.
+- If you **re-enter any previously visited room**, the dungeon resets.
+- If you **visit more than 30 rooms**, the dungeon resets.
+
+## Next steps to expand the game-session visual
 
 1. **Design a room graph.**
    - Represent labyrinth rooms as nodes and create multiple edges for alternative paths.
